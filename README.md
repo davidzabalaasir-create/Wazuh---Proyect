@@ -1,1 +1,1 @@
-# Wazuh---Proyect
+# wazuh-siem-lab
