@@ -40,7 +40,10 @@ jobs:
         run: python3 -m py_compile configs/integrations/custom-telegram
 
       - name: Configuración rsyslog
-        run: sudo rsyslogd -N1 -f configs/relay/10-firewall-relay.conf
+        run: |
+          # AppArmor solo deja a rsyslogd leer su configuración desde /etc
+          sudo cp configs/relay/10-firewall-relay.conf /etc/rsyslog.d/
+          sudo rsyslogd -N1
 
       - name: Sin secretos en el repositorio
         run: |
