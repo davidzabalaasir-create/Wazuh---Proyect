@@ -1,0 +1,13 @@
+# Credenciales y secretos — nunca subir
+wazuh-install-files.tar
+wazuh-passwords.txt
+*.pass
+*.key
+*.pem
+.env
+
+# Ficheros temporales
+*.bak-*
+*.swp
+.DS_Store
+Thumbs.db

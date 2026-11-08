@@ -1,0 +1,12 @@
+<!--
+  CU-01 · Bloqueo automático de fuerza bruta SSH
+  Añadir dentro de <ossec_config> en /var/ossec/etc/ossec.conf (manager)
+  El comando "firewall-drop" ya viene definido por defecto en ossec.conf.
+  Regla 5763: "SSHD brute force trying to get access to the system"
+-->
+<active-response>
+  <command>firewall-drop</command>
+  <location>local</location>
+  <rules_id>5763</rules_id>
+  <timeout>180</timeout>
+</active-response>

@@ -1,0 +1,12 @@
+<!--
+  Recepción de syslog desde el firewall (pfSense / OPNsense)
+  Añadir dentro de <ossec_config> en /var/ossec/etc/ossec.conf (manager)
+  IMPORTANTE: mantener también el bloque <remote> con <connection>secure</connection> de los agentes.
+-->
+<remote>
+  <connection>syslog</connection>
+  <port>514</port>
+  <protocol>udp</protocol>
+  <allowed-ips>192.168.56.1/32</allowed-ips>
+  <local_ip>192.168.56.10</local_ip>
+</remote>

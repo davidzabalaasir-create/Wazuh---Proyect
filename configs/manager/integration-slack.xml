@@ -1,0 +1,11 @@
+<!--
+  Notificaciones en Slack para alertas de nivel >= 10
+  Añadir dentro de <ossec_config> en /var/ossec/etc/ossec.conf (manager)
+  NO subir el webhook real al repositorio.
+-->
+<integration>
+  <name>slack</name>
+  <hook_url>https://hooks.slack.com/services/TU/WEBHOOK/AQUI</hook_url>
+  <level>10</level>
+  <alert_format>json</alert_format>
+</integration>

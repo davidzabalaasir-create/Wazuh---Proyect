@@ -1,0 +1,16 @@
+<!--
+  Decoder personalizado para la aplicación ficticia "labapp"
+  Destino: /var/ossec/etc/decoders/local_decoder.xml
+  Ejemplo de log:
+    2026-11-08T10:15:02 labapp: LOGIN_FAILED user=admin src_ip=192.168.56.50
+  Validar siempre con /var/ossec/bin/wazuh-logtest
+-->
+<decoder name="labapp">
+  <prematch>labapp: </prematch>
+</decoder>
+
+<decoder name="labapp-fields">
+  <parent>labapp</parent>
+  <regex offset="after_parent">^(\S+) user=(\S+) src_ip=(\S+)</regex>
+  <order>action, user, srcip</order>
+</decoder>
