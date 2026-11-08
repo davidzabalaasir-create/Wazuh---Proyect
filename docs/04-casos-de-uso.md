@@ -114,9 +114,25 @@ docker stop prueba && docker rm prueba
 
 ---
 
-## Extra · Notificaciones en Slack
+## Extra · Notificaciones en el móvil
 
-Usa el bloque de [configs/manager/integration-slack.xml](../configs/manager/integration-slack.xml), que envía las alertas de nivel ≥ 10. El *webhook* **no** se sube al repositorio.
+| Canal | Tipo | Configuración |
+|---|---|---|
+| Slack | Integración nativa | [integration-slack.xml](../configs/manager/integration-slack.xml) |
+| Telegram | Script personalizado | [integration-telegram.xml](../configs/manager/integration-telegram.xml) + [custom-telegram](../configs/integrations/custom-telegram) |
+
+Instalación de Telegram en el manager:
+
+```bash
+sudo cp configs/integrations/custom-telegram /var/ossec/integrations/
+sudo chown root:wazuh /var/ossec/integrations/custom-telegram
+sudo chmod 750 /var/ossec/integrations/custom-telegram
+# añade el bloque <integration> a ossec.conf con tu token y tu chat_id
+sudo systemctl restart wazuh-manager
+tail -f /var/ossec/logs/integrations.log
+```
+
+Ambas envían las alertas de nivel ≥ 10, así que el CU-01 debería hacer sonar el móvil. **No** subas tokens ni *webhooks* al repositorio.
 
 ## Tabla resumen (rellena con datos reales)
 

@@ -58,7 +58,26 @@ Para comprobar que llegan los mensajes:
 2. Busca la IP del firewall en `/var/ossec/logs/archives/archives.log`.
 3. Vuelve a desactivar `logall` para no llenar el disco.
 
-> ⚠️ Recibir logs no basta para tener alertas: hacen falta decoders y reglas que reconozcan esos mensajes. pfSense usa el formato RFC5424, que puede dar problemas. Una alternativa más robusta es recibir el syslog con rsyslog en un host con agente y leer el fichero con `<localfile>`.
+> ⚠️ Recibir logs no basta para tener alertas: hacen falta decoders y reglas que reconozcan esos mensajes. pfSense usa el formato RFC5424, que puede dar problemas.
+
+### Alternativa: relay rsyslog (ADR-003)
+
+Si la recepción directa no genera alertas, recibe el syslog en `ubuntu-agent` y deja que el agente lea el fichero:
+
+```bash
+# En ubuntu-agent
+sudo mkdir -p /var/log/remote
+sudo cp configs/relay/10-firewall-relay.conf /etc/rsyslog.d/
+sudo cp configs/relay/logrotate-firewall /etc/logrotate.d/firewall-relay
+sudo rsyslogd -N1                       # validar sintaxis
+sudo systemctl restart rsyslog
+sudo ufw allow from 192.168.56.1 to any port 514 proto udp
+tail -f /var/log/remote/firewall.log    # comprobar que llegan
+```
+
+En pfSense: **Status → System Logs → Settings → Remote Logging**. Indica `192.168.56.20:514` y marca *Firewall Events*. El `agent.conf` del grupo `linux` ya incluye `/var/log/remote/firewall.log`.
+
+> Comprueba con `wazuh-logtest` si las líneas de `filterlog` se decodifican con el ruleset incluido. Si no, crea un decoder propio como en el capítulo 5.
 
 ## 3.5 Retención
 

@@ -37,8 +37,4 @@ En la versión 4.14, **Filebeat** envía las alertas del manager al indexer. Los
 
 ## Diagrama
 
-Guarda el diagrama exportado en [`../diagramas/`](../diagramas/) (por ejemplo `red-laboratorio.png`) e inclúyelo aquí:
-
-```markdown
-![Diagrama de red](../diagramas/red-laboratorio.png)
-```
+![Topología del laboratorio](../diagramas/red-laboratorio.svg)

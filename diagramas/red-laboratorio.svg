@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 560" font-family="Segoe UI, Ubuntu, Arial, sans-serif">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#62d9df"/>
+    </marker>
+    <marker id="arrRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#ff6b6b"/>
+    </marker>
+    <marker id="arrLime" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#d2ff52"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="560" fill="#08101d"/>
+  <text x="30" y="40" fill="#d2ff52" font-size="22" font-weight="700">Wazuh SIEM Lab · Topología</text>
+  <text x="30" y="64" fill="#8aa0b8" font-size="13">Red interna / host-only 192.168.56.0/24 · Wazuh 4.14 todo en uno</text>
+
+  <!-- Red -->
+  <rect x="20" y="85" width="920" height="400" rx="14" fill="none" stroke="#2a3a52" stroke-dasharray="6 5"/>
+  <text x="34" y="105" fill="#5d7391" font-size="12">LAN laboratorio 192.168.56.0/24</text>
+
+  <!-- Wazuh server -->
+  <rect x="360" y="150" width="240" height="170" rx="12" fill="#10203a" stroke="#d2ff52" stroke-width="2"/>
+  <text x="480" y="180" fill="#d2ff52" font-size="17" font-weight="700" text-anchor="middle">wazuh-server</text>
+  <text x="480" y="200" fill="#c9d6e6" font-size="13" text-anchor="middle">192.168.56.10 · Ubuntu 24.04</text>
+  <rect x="380" y="214" width="200" height="26" rx="6" fill="#16304f"/>
+  <text x="480" y="232" fill="#ffffff" font-size="12" text-anchor="middle">Manager · reglas · respuesta activa</text>
+  <rect x="380" y="246" width="200" height="26" rx="6" fill="#16304f"/>
+  <text x="480" y="264" fill="#ffffff" font-size="12" text-anchor="middle">Indexer (OpenSearch)</text>
+  <rect x="380" y="278" width="200" height="26" rx="6" fill="#16304f"/>
+  <text x="480" y="296" fill="#ffffff" font-size="12" text-anchor="middle">Dashboard · HTTPS 443</text>
+
+  <!-- Ubuntu agent -->
+  <rect x="60" y="150" width="210" height="110" rx="12" fill="#10203a" stroke="#62d9df" stroke-width="2"/>
+  <text x="165" y="178" fill="#62d9df" font-size="16" font-weight="700" text-anchor="middle">ubuntu-agent</text>
+  <text x="165" y="198" fill="#c9d6e6" font-size="13" text-anchor="middle">192.168.56.20</text>
+  <text x="165" y="218" fill="#c9d6e6" font-size="12" text-anchor="middle">SSH · nginx · Docker · labapp</text>
+  <text x="165" y="238" fill="#8aa0b8" font-size="12" text-anchor="middle">relay rsyslog :514 (ADR-003)</text>
+
+  <!-- Windows agent -->
+  <rect x="60" y="320" width="210" height="100" rx="12" fill="#10203a" stroke="#62d9df" stroke-width="2"/>
+  <text x="165" y="348" fill="#62d9df" font-size="16" font-weight="700" text-anchor="middle">windows-agent</text>
+  <text x="165" y="368" fill="#c9d6e6" font-size="13" text-anchor="middle">192.168.56.30</text>
+  <text x="165" y="388" fill="#c9d6e6" font-size="12" text-anchor="middle">Windows 10/11 · Sysmon</text>
+
+  <!-- Firewall -->
+  <rect x="690" y="150" width="230" height="100" rx="12" fill="#10203a" stroke="#8aa0b8" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="805" y="178" fill="#c9d6e6" font-size="16" font-weight="700" text-anchor="middle">firewall (opcional)</text>
+  <text x="805" y="198" fill="#c9d6e6" font-size="13" text-anchor="middle">192.168.56.1</text>
+  <text x="805" y="218" fill="#8aa0b8" font-size="12" text-anchor="middle">pfSense / OPNsense · syslog</text>
+
+  <!-- Kali -->
+  <rect x="690" y="320" width="230" height="100" rx="12" fill="#2a1418" stroke="#ff6b6b" stroke-width="2"/>
+  <text x="805" y="348" fill="#ff6b6b" font-size="16" font-weight="700" text-anchor="middle">kali-attacker</text>
+  <text x="805" y="368" fill="#c9d6e6" font-size="13" text-anchor="middle">192.168.56.50</text>
+  <text x="805" y="388" fill="#c9d6e6" font-size="12" text-anchor="middle">Hydra · sin salida a Internet</text>
+
+  <!-- Agent links -->
+  <line x1="270" y1="200" x2="358" y2="210" stroke="#62d9df" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="314" y="196" fill="#62d9df" font-size="11" text-anchor="middle">1514/1515</text>
+  <line x1="270" y1="370" x2="358" y2="290" stroke="#62d9df" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="335" y="362" fill="#62d9df" font-size="11" text-anchor="middle">1514/1515</text>
+
+  <!-- Syslog -->
+  <path d="M690,215 C620,120 300,110 230,148" fill="none" stroke="#d2ff52" stroke-width="2" stroke-dasharray="6 4" marker-end="url(#arrLime)"/>
+  <text x="460" y="118" fill="#d2ff52" font-size="11" text-anchor="middle">syslog 514/UDP → relay rsyslog</text>
+
+  <!-- Attack -->
+  <path d="M690,380 C560,470 330,470 230,262" fill="none" stroke="#ff6b6b" stroke-width="2" marker-end="url(#arrRed)"/>
+  <text x="470" y="462" fill="#ff6b6b" font-size="12" text-anchor="middle">CU-01 · fuerza bruta SSH (22/TCP) → la víctima bloquea la IP con firewall-drop</text>
+
+  <!-- Admin -->
+  <text x="480" y="345" fill="#8aa0b8" font-size="12" text-anchor="middle">Administración: https://192.168.56.10</text>
+
+  <!-- Legend -->
+  <g font-size="12">
+    <line x1="40" y1="515" x2="70" y2="515" stroke="#62d9df" stroke-width="2"/><text x="78" y="519" fill="#c9d6e6">Agente → manager (AES)</text>
+    <line x1="260" y1="515" x2="290" y2="515" stroke="#d2ff52" stroke-width="2" stroke-dasharray="6 4"/><text x="298" y="519" fill="#c9d6e6">Syslog sin agente</text>
+    <line x1="450" y1="515" x2="480" y2="515" stroke="#ff6b6b" stroke-width="2"/><text x="488" y="519" fill="#c9d6e6">Ataque simulado / respuesta</text>
+    <text x="700" y="519" fill="#5d7391">Wazuh 4.14 · ASIR · David Zabala</text>
+  </g>
+</svg>

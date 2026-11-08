@@ -1,0 +1,71 @@
+#!/var/ossec/framework/python/bin/python3
+"""
+Integración de Wazuh con Telegram (enfoque de la comunidad, no oficial).
+
+Destino:  /var/ossec/integrations/custom-telegram  (en el manager)
+Permisos: sudo chown root:wazuh /var/ossec/integrations/custom-telegram
+          sudo chmod 750 /var/ossec/integrations/custom-telegram
+Config:   ver configs/manager/integration-telegram.xml
+
+Wazuh ejecuta el script con estos argumentos:
+  argv[1] = ruta del fichero con la alerta (JSON)
+  argv[2] = api_key  -> aquí se usa como chat_id de Telegram
+  argv[3] = hook_url -> https://api.telegram.org/bot<TOKEN>/sendMessage
+"""
+import json
+import sys
+import urllib.request
+
+LOG_FILE = "/var/ossec/logs/integrations.log"
+
+
+def log(msg: str) -> None:
+    try:
+        with open(LOG_FILE, "a", encoding="utf-8") as f:
+            f.write(f"custom-telegram: {msg}\n")
+    except OSError:
+        pass
+
+
+def build_message(alert: dict) -> str:
+    rule = alert.get("rule", {})
+    agent = alert.get("agent", {})
+    data = alert.get("data", {})
+    mitre = ", ".join(rule.get("mitre", {}).get("id", [])) or "-"
+    lines = [
+        "🚨 Wazuh · alerta nivel {}".format(rule.get("level", "?")),
+        "Regla: {} · {}".format(rule.get("id", "?"), rule.get("description", "")),
+        "Agente: {} ({})".format(agent.get("name", "?"), agent.get("ip", "-")),
+        "MITRE: {}".format(mitre),
+    ]
+    if data.get("srcip"):
+        lines.append("IP origen: {}".format(data["srcip"]))
+    lines.append("Hora: {}".format(alert.get("timestamp", "?")))
+    return "\n".join(lines)
+
+
+def main() -> int:
+    if len(sys.argv) < 4:
+        log("faltan argumentos")
+        return 1
+
+    alert_file, chat_id, hook_url = sys.argv[1], sys.argv[2], sys.argv[3]
+
+    with open(alert_file, encoding="utf-8") as f:
+        alert = json.load(f)
+
+    payload = json.dumps({"chat_id": chat_id, "text": build_message(alert)}).encode()
+    req = urllib.request.Request(
+        hook_url, data=payload, headers={"Content-Type": "application/json"}
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            log(f"enviado (HTTP {resp.status}) regla {alert.get('rule', {}).get('id')}")
+    except Exception as exc:  # noqa: BLE001 - registrar cualquier fallo de red
+        log(f"error al enviar: {exc}")
+        return 1
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

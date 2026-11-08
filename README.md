@@ -3,7 +3,7 @@
 > Proyecto de **Administración de Sistemas Informáticos en Red (ASIR)** — David Zabala
 > Laboratorio SIEM con **Wazuh 4.14.x** que centraliza logs de Linux, Windows y red, detecta ataques reales y responde de forma automática.
 
-![Wazuh](https://img.shields.io/badge/Wazuh-4.14.x-blue) ![SIEM](https://img.shields.io/badge/SIEM-XDR-green) ![MITRE](https://img.shields.io/badge/MITRE-ATT%26CK-red) ![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow)
+![Wazuh](https://img.shields.io/badge/Wazuh-4.14.x-blue) ![SIEM](https://img.shields.io/badge/SIEM-XDR-green) ![MITRE](https://img.shields.io/badge/MITRE-ATT%26CK-red) ![Estado](https://img.shields.io/badge/estado-en%20desarrollo-yellow) ![Validación](https://github.com/davidzabalaasir-create/Wazuh---Proyect/actions/workflows/validate.yml/badge.svg)
 
 **English summary:** Home-lab SIEM built with Wazuh 4.14 (all-in-one). It centralizes Linux, Windows (Sysmon) and syslog sources through agent groups. It also includes custom decoders and rules, plus five detection scenarios: SSH brute force with active response, FIM, VirusTotal malware removal, Docker monitoring and vulnerability detection. Each scenario is mapped to MITRE ATT&CK and documented SOC-style.
 
@@ -19,23 +19,7 @@
 
 ## 🗺️ Arquitectura
 
-```
-                 Red interna del laboratorio (192.168.56.0/24)
- ┌──────────────────────┐        ┌───────────────────────────┐
- │  wazuh-server        │◄──1514─┤ ubuntu-agent (.20)         │
- │  Ubuntu 24.04 (.10)  │◄──1515─┤ SSH · nginx · Docker       │
- │  manager + indexer   │        └───────────────────────────┘
- │  + dashboard (443)   │        ┌───────────────────────────┐
- │                      │◄──1514─┤ windows-agent (.30)        │
- │  syslog 514/UDP ◄────┼──┐     │ Windows 10/11 + Sysmon     │
- └──────────────────────┘  │     └───────────────────────────┘
-                           │     ┌───────────────────────────┐
-                           └─────┤ firewall (opcional)        │
-                                 │ pfSense / OPNsense         │
- ┌──────────────────────┐        └───────────────────────────┘
- │ kali-attacker (.50)  │── Hydra / pruebas ──► ubuntu-agent
- └──────────────────────┘
-```
+![Topología del laboratorio](diagramas/red-laboratorio.svg)
 
 Más detalle en [docs/01-arquitectura.md](docs/01-arquitectura.md).
 
@@ -58,6 +42,8 @@ Más detalle en [docs/01-arquitectura.md](docs/01-arquitectura.md).
 | 6 | [Troubleshooting](docs/06-troubleshooting.md) | Registro de problemas y soluciones |
 | 7 | [Informe de incidente](docs/07-informe-incidente.md) | Plantilla estilo SOC |
 | 8 | [Conclusiones y mejoras](docs/08-conclusiones.md) | Lecciones aprendidas, trabajo futuro |
+| 9 | [Guion de la demo](docs/09-guion-demo.md) | Demo de 15 min y preguntas del tribunal |
+| — | [Checklist de evidencias](evidencias/README.md) | Capturas y alertas que hay que guardar |
 | — | [Decisiones de arquitectura (ADR)](docs/adr/README.md) | Versión, despliegue, ingesta de syslog |
 
 ## 🧪 Casos de uso
@@ -79,7 +65,9 @@ wazuh-siem-lab/
 ├── docs/                 # Memoria del proyecto por capítulos
 ├── configs/
 │   ├── manager/          # Fragmentos de ossec.conf, reglas y decoders
-│   └── shared/           # agent.conf por grupo (linux, windows)
+│   ├── shared/           # agent.conf por grupo (linux, windows)
+│   ├── integrations/     # Script de notificaciones en Telegram
+│   └── relay/            # rsyslog para los logs del firewall
 ├── scripts/              # Instalación, grupos y pruebas
 ├── diagramas/            # Diagramas de red (draw.io / PNG)
 └── evidencias/           # Capturas y JSON de alertas

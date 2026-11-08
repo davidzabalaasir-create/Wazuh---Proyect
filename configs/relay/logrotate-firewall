@@ -1,0 +1,13 @@
+# Rotación del log del firewall recibido por el relay
+# Destino: /etc/logrotate.d/firewall-relay en ubuntu-agent
+/var/log/remote/firewall.log {
+    daily
+    rotate 7
+    compress
+    delaycompress
+    missingok
+    notifempty
+    postrotate
+        /usr/lib/rsyslog/rsyslog-rotate
+    endscript
+}

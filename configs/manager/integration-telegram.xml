@@ -1,0 +1,16 @@
+<!--
+  Notificaciones en Telegram para alertas de nivel >= 10 (integración personalizada)
+  Requiere el script configs/integrations/custom-telegram en /var/ossec/integrations/
+  Añadir dentro de <ossec_config> en /var/ossec/etc/ossec.conf (manager)
+
+  1. Crea un bot con @BotFather y copia el TOKEN.
+  2. Escribe al bot y obtén tu chat_id en https://api.telegram.org/bot<TOKEN>/getUpdates
+  3. NO subas el token ni el chat_id reales al repositorio.
+-->
+<integration>
+  <name>custom-telegram</name>
+  <hook_url>https://api.telegram.org/botTU_TOKEN/sendMessage</hook_url>
+  <api_key>TU_CHAT_ID</api_key>
+  <level>10</level>
+  <alert_format>json</alert_format>
+</integration>

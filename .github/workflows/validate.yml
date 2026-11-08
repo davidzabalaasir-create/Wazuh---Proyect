@@ -1,0 +1,53 @@
+name: Validar configuraciones
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar herramientas
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq libxml2-utils shellcheck rsyslog
+
+      - name: XML de Wazuh bien formado
+        run: |
+          # Los ficheros de Wazuh pueden tener varios elementos raíz: se envuelven en <root>.
+          status=0
+          for f in configs/manager/*.xml configs/shared/*/agent.conf; do
+            if { echo '<root>'; cat "$f"; echo '</root>'; } | xmllint --noout - ; then
+              echo "OK  $f"
+            else
+              echo "ERR $f"; status=1
+            fi
+          done
+          exit $status
+
+      - name: SVG del diagrama
+        run: xmllint --noout diagramas/*.svg
+
+      - name: Scripts Bash (shellcheck)
+        run: shellcheck scripts/*.sh
+
+      - name: Script de integración (Python)
+        run: python3 -m py_compile configs/integrations/custom-telegram
+
+      - name: Configuración rsyslog
+        run: sudo rsyslogd -N1 -f configs/relay/10-firewall-relay.conf
+
+      - name: Sin secretos en el repositorio
+        run: |
+          if grep -rEn --exclude-dir=.git \
+               -e 'hooks\.slack\.com/services/T[A-Z0-9]{8,}' \
+               -e 'api\.telegram\.org/bot[0-9]{6,}:' \
+               -e '<api_key>[A-Za-z0-9]{32,}</api_key>' . ; then
+            echo "Posible secreto detectado"; exit 1
+          fi
+          echo "Sin secretos"
